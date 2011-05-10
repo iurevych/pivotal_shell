@@ -38,7 +38,7 @@ module PivotalShell::Commands
         end
       end
       if @story
-        message <<-MSG
+        message = <<-MSG
 #{("[\##{@story.id}]").rjust 12} 
 #{@message}\n\n Feature:#{@story.name.strip}
 MSG

@@ -38,10 +38,7 @@ module PivotalShell::Commands
         end
       end
       if @story
-        message = <<-MSG
-#{("[\##{@story.id}]").rjust 12} 
-#{@message}\n\n Feature:#{@story.name.strip}
-MSG
+        message = "#{("[\##{@story.id}]").rjust 12} #{@message}\n\n Feature:#{@story.name.strip}"
         puts `git commit -m "#{message}"`
       else
         puts "Story not found"

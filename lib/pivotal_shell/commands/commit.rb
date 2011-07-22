@@ -11,38 +11,45 @@ module PivotalShell::Commands
         end
       end
       opts.parse!
-      @story = PivotalShell::Configuration.project.stories.find(arguments.first) unless arguments.empty?
+
+      unless arguments.empty?
+        @stories = arguments.map do |argument|
+          PivotalShell::Configuration.project.stories.find(argument) 
+        end
+      end
 
     end
 
     def execute
       if `git diff --staged`.empty?
-        puts "No changed staged to commit."
+        puts "No changes staged to commit."
         exit 1
       end
-      stories = PivotalShell::Configuration.project.stories.all( 
+      all_stories = PivotalShell::Configuration.project.stories.all( 
         :owner => PivotalShell::Configuration.me,
         :state => %w(started finished delivered),
         :limit => 30
       )
 
-      unless @story
-        unless stories.empty?
-          stories.each_with_index do |story, index|
+      unless @stories
+        unless all_stories.empty?
+          all_stories.each_with_index do |story, index|
             puts "[#{index + 1}] #{story.name}"
           end
           puts ""
-          index = Readline.readline("Index: ", true).to_i
-          @story = stories[index - 1]
+          @stories  = Readline.readline("Indexes(csv): ", true).split(/\s*,\s*/).reject do |string|
+            string == ""
+          end.map do |string|
+            index = string.to_i
+            all_stories[index - 1] || (return puts("Story index #{index} not found."))
+          end
 
         end
       end
-      if @story
-        message = "#{("[\##{@story.id}]").rjust 12} #{@message}\n\n Feature:#{@story.name.strip}"
-        puts `git commit -m "#{message}"`
-      else
-        puts "Story not found"
-      end
+      message = ("[#{@stories.map { |s| "\##{s.id}"}.join(", ")}]").rjust 12
+      message += @message.to_s + "\n\n"
+      message += @stories.map {|s| "Feature: " + s.name.strip}.join("\n\n")
+      puts `git commit -m "#{message}"`
     end
   end
 end

@@ -31,7 +31,7 @@ Both `.pivotalrc` files are regular YAML files.
 
     pivotal commit -m "initial commit"
 
-You'll be shown your pivotal stories and will be able to select one of them to attach commit. That's all - no need to look for storie id in pivotal no more!
+You'll be shown your pivotal stories and will be able to select one of them to attach commit. That's all - no need to look for story id in pivotal no more!
 
 ## Example
 

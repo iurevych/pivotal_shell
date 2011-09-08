@@ -19,7 +19,8 @@ class PivotalShell::Cache
     end
     
     def self.find(id)
-      hash = PivotalShell::Configuration.cache.db.execute("SELECT * FROM users WHERE id=? OR initials=? OR name=? OR email=?", id, id, id, id).first
+      str_id = id.to_s.downcase
+      hash = PivotalShell::Configuration.cache.db.execute("SELECT * FROM users WHERE id=? OR lower(initials)=? OR lower(name)=? OR lower(email)=?", id, str_id, str_id, str_id).first
       hash && new(hash)
     end
 

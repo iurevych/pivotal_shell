@@ -33,13 +33,13 @@ class PivotalShell::Cache
       
       if params[:state]
         params[:state] = [params[:state]].flatten
-        conditions << "current_state IN (#{(["?"]*params[:state].length).join(',')})"
+        conditions << "lower(current_state) IN (#{(["?"]*params[:state].length).join(',')})"
         query_params << params[:state]
       end
 
       if params[:type]
         params[:type] = [params[:type]].flatten
-        conditions << "story_type IN (#{(["?"]*params[:type].length).join(',')})"
+        conditions << "lower(story_type) IN (#{(["?"]*params[:type].length).join(',')})"
         query_params << params[:type]
       end
 
